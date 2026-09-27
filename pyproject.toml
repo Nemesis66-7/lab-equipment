@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pp-lab-equipment"
+version = "0.1.0"
+description = "pyVISA/SCPI API for Siglent bench instruments used by PP HIL repos"
+requires-python = ">=3.10"
+dependencies = [
+    "PyVISA>=1.15.0",
+    "PyVISA-py>=0.8.1",
+    "dependency-injector>=4.41",
+]
+
+[project.optional-dependencies]
+# Loading a local .env for hosts (optional convenience for scripts).
+dotenv = ["python-dotenv>=1.0"]
+# Everything needed to run the test suite against the pyvisa-sim backend.
+test = [
+    "pytest>=8.0",
+    "PyVISA-sim>=0.6",
+    "ruff",
+]
+# Adapter helpers when driving instruments through a labgrid target. labgrid
+# itself is provided by the consuming HIL repo, so it is not pinned here.
+labgrid = []
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["lab_equipment", "lab_equipment.*"]
+
+[tool.ruff]
+line-length = 79  # PEP 8, matches pphil_common
+
+[tool.ruff.lint]
+select = ["E", "W"]  # Full pycodestyle (errors + warnings)
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

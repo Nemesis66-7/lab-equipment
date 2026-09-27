@@ -1,0 +1,74 @@
+spec: "1.0"
+devices:
+  spd3303x:
+    eom:
+      TCPIP INSTR: {q: "\n", r: "\n"}
+      TCPIP SOCKET: {q: "\n", r: "\n"}
+    error: ERROR
+    dialogues:
+      - {q: "*IDN?", r: "Siglent Technologies,SPD3303X-E,SN123,1.0"}
+      - {q: "*RST"}
+      - {q: "*CLS"}
+      - {q: "*OPC?", r: "1"}
+      - {q: 'SYST:ERR?', r: '0,"No error"'}
+      - {q: "SYSTem:STATus?", r: "0x0010"}
+      - {q: "OUTPut CH1,ON"}
+      - {q: "OUTPut CH1,OFF"}
+      - {q: "OUTPut CH2,ON"}
+      - {q: "OUTPut CH2,OFF"}
+      - {q: "OUTPut:TRACK 0"}
+      - {q: "INSTrument CH1"}
+      - {q: "MEASure:VOLTage? CH1", r: "3.300"}
+      - {q: "MEASure:CURRent? CH1", r: "0.500"}
+      - {q: "MEASure:POWEr? CH1", r: "1.650"}
+    properties:
+      ch1_voltage:
+        default: 0
+        getter: {q: "CH1:VOLTage?", r: "{:.3f}"}
+        setter: {q: "CH1:VOLTage {:.3f}"}
+      ch1_current:
+        default: 0
+        getter: {q: "CH1:CURRent?", r: "{:.3f}"}
+        setter: {q: "CH1:CURRent {:.3f}"}
+      ch2_voltage:
+        default: 0
+        getter: {q: "CH2:VOLTage?", r: "{:.3f}"}
+        setter: {q: "CH2:VOLTage {:.3f}"}
+
+  sdg1062x:
+    eom:
+      TCPIP INSTR: {q: "\n", r: "\n"}
+    error: ERROR
+    dialogues:
+      - {q: "*IDN?", r: "Siglent Technologies,SDG1062X,SN456,1.0"}
+      - {q: "*RST"}
+      - {q: "C1:BSWV WVTP,SINE,FRQ,1000,AMP,2,OFST,0"}
+      - {q: "C1:BSWV FRQ,2000"}
+      - {q: "C1:BSWV?",
+         r: "C1:BSWV WVTP,SINE,FRQ,1000HZ,AMP,2V,OFST,0V,PHSE,0"}
+      - {q: "C1:OUTP ON,LOAD,50"}
+      - {q: "C1:OUTP OFF"}
+      - {q: "C2:OUTP OFF"}
+      - {q: "C1:OUTP?", r: "C1:OUTP ON,LOAD,50,PLRT,NOR"}
+
+  sdm3065x:
+    eom:
+      TCPIP INSTR: {q: "\n", r: "\n"}
+    error: ERROR
+    dialogues:
+      - {q: "*IDN?", r: "Siglent Technologies,SDM3065X,SN789,1.0"}
+      - {q: "*RST"}
+      - {q: "MEASure:VOLTage:DC?", r: "1.234000"}
+      - {q: "MEASure:CURRent:DC?", r: "0.010000"}
+      - {q: "MEASure:RESistance?", r: "100.500000"}
+      - {q: "CONFigure:VOLTage:DC"}
+      - {q: "SAMPle:COUNt 3"}
+      - {q: "READ?", r: "1.0,1.1,0.9"}
+
+resources:
+  TCPIP::psu::INSTR:
+    device: spd3303x
+  TCPIP::awg::INSTR:
+    device: sdg1062x
+  TCPIP::dmm::INSTR:
+    device: sdm3065x
